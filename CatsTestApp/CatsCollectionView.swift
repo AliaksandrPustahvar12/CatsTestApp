@@ -28,10 +28,23 @@ class CatsCollectionView: UIViewController {
         navigationItem.title = "Cats"
         setUpCollectionView()
         
-        vm.updateCollection = { cats in
+        vm.updateCollection = { cats, page in
             self.cats = cats
+            let first = cats.count - 10
+            let last = cats.count - 1
+            print(cats.count, first, last)
+           var indexPathsToUpdate: [IndexPath] = []
+            
+            for i in first...last {
+                let indexPath = IndexPath(item: i, section: 0)
+                indexPathsToUpdate.append(indexPath)
+            }
+
+//
+//
             DispatchQueue.main.async {
-                self.catsView.reloadData()
+                //self.catsView.reloadData()
+                self.catsView.reloadItems(at: indexPathsToUpdate)
             }
         }
     }
@@ -82,7 +95,6 @@ extension CatsCollectionView: UICollectionViewDelegate, UICollectionViewDataSour
     
     func scrollViewDidScroll(_ scrollView: UIScrollView)  {
         let pos = scrollView.contentOffset.y
-        print(pos, catsView.contentSize.height, scrollView.frame.size.height )
         if pos > catsView.contentSize.height + 70 - scrollView.frame.size.height && pos > 0 {
             guard !vm.isPagOn else { return }
             Task {

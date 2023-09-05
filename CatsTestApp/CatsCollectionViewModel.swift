@@ -19,24 +19,24 @@ class CatsCollectionViewModel {
     let key = "live_skpFP9TrYQk2jSlewvXJVbPVlw4DMEB5dw6rOFtgMkisvswqjORjTxeM5KFBVQkg"
     
     private  var cats: [CatModel] = [CatModel]()
-    var updateCollection: (([CatModel]) -> Void)?
+    var updateCollection: (([CatModel], _ page: Int) -> Void)?
     
     init() {
         Task{
             print(page)
             cats = await network.fetchData(path: path, page: String(page), key: key)
-            self.updateCollection?(cats)
+            self.updateCollection?(cats, page)
         }
     }
     
     func getmoreCats() async {
-        page += 1
+        page = cats.count / 10
         isPagOn = true
         var newCats: [CatModel] = []
         newCats = await network.fetchData(path: path, page: String(page), key: key)
         cats.append(contentsOf: newCats)
-        print(cats.count)
-        self.updateCollection?(cats)
+        print(page)
+        self.updateCollection?(cats, page)
         isPagOn = false
     }
     
