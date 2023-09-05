@@ -34,10 +34,11 @@ class CatsCollectionViewModel {
         isPagOn = true
         var newCats: [CatModel] = []
         newCats = await network.fetchData(path: path, page: String(page), key: key)
-        cats.append(contentsOf: newCats)
-        print(page)
-        self.updateCollection?(cats, page)
-        isPagOn = false
+        if !newCats.isEmpty {
+            cats.append(contentsOf: newCats)
+            self.updateCollection?(cats, page)
+            isPagOn = false
+        }
     }
     
     @MainActor func getImageData(id: String) async -> Data? {

@@ -30,21 +30,23 @@ class CatsCollectionView: UIViewController {
         
         vm.updateCollection = { cats, page in
             self.cats = cats
-            let first = cats.count - 10
-            let last = cats.count - 1
-            print(cats.count, first, last)
+                .filter { $0.wikipediaUrl != nil && $0.referenceImageId != nil }
+                .reduce([]) { (result, element) in
+                    return result.contains(element) ? result : result + [element]
+                }
+            let first = self.cats.count - 10
+            let last = self.cats.count - 1
+            print(self.cats.count, first, last)
            var indexPathsToUpdate: [IndexPath] = []
-            
-            for i in first...last {
+           for i in first...last {
                 let indexPath = IndexPath(item: i, section: 0)
                 indexPathsToUpdate.append(indexPath)
             }
 
-//
-//
             DispatchQueue.main.async {
-                //self.catsView.reloadData()
-                self.catsView.reloadItems(at: indexPathsToUpdate)
+                self.catsView.performBatchUpdates {
+                    self.catsView.reloadItems(at: indexPathsToUpdate)
+                }
             }
         }
     }
@@ -76,21 +78,24 @@ extension CatsCollectionView: UICollectionViewDelegate, UICollectionViewDataSour
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CatsCollectionCell", for: indexPath) as! CatsCollectionCell
         cell.catName.text = cats[indexPath.row].name
         let cat = cats[indexPath.row]
-        let id = cat.referenceImageId
-        Task { @MainActor in
-            if let imageData = await vm.getImageData(id: id) {
-                cell.catImage.image = UIImage(data: imageData)
+        if  let id = cat.referenceImageId {
+            Task { @MainActor in
+                if let imageData = await vm.getImageData(id: id) {
+                    cell.catImage.image = UIImage(data: imageData)
+                }
             }
         }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedURL = URL(string: cats[indexPath.row].wikipediaUrl)
-              
-              let webViewController = WikiView()
-              webViewController.url = selectedURL
-              navigationController?.pushViewController(webViewController, animated: true)
+        if let url = cats[indexPath.row].wikipediaUrl {
+            let selectedURL = URL(string: url)
+            
+            let webViewController = WikiView()
+            webViewController.url = selectedURL
+            navigationController?.pushViewController(webViewController, animated: true)
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView)  {

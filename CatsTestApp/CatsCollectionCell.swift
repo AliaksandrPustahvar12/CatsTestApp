@@ -44,7 +44,7 @@ class CatsCollectionCell: UICollectionViewCell {
         catName.textAlignment = .center
         catName.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         catName.adjustsFontSizeToFitWidth = true
-        catName.textColor = .darkGray
+        catName.textColor = UIColor(named: "textLabelColor")
         
         contentView.addSubview(catImage)
         contentView.addSubview(catName)

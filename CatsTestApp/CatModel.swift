@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct CatModel: Decodable {
+struct CatModel: Decodable, Hashable {
     let name: String
-    let wikipediaUrl: String
-    let referenceImageId: String
+    let wikipediaUrl: String?
+    let referenceImageId: String?
 }
 
 struct CatImage: Decodable {
