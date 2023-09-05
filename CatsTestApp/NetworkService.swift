@@ -22,7 +22,6 @@ final class NetworkService {
             return try await AF.request(urlComponents).serializingDecodable([CatModel].self,
                                                                             decoder: decoder).value
         } catch {
-            print("empty")
             return []
         }
     }
@@ -58,6 +57,5 @@ final class NetworkService {
     
     enum MyErrors: Error {
         case badUrl
-        case noData
     }
 }

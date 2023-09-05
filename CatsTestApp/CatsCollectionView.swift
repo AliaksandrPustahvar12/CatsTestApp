@@ -78,13 +78,34 @@ extension CatsCollectionView: UICollectionViewDelegate, UICollectionViewDataSour
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CatsCollectionCell", for: indexPath) as! CatsCollectionCell
         cell.catName.text = cats[indexPath.row].name
         let cat = cats[indexPath.row]
-        if  let id = cat.referenceImageId {
-            Task { @MainActor in
-                if let imageData = await vm.getImageData(id: id) {
-                    cell.catImage.image = UIImage(data: imageData)
-                }
+        
+        if let imageDataFromCache = vm.getImageDataFromCache(for: cat.name) {
+            DispatchQueue.main.async {
+                cell.catImage.image = UIImage(data: imageDataFromCache)
             }
-        }
+        } else {
+            if  let id = cat.referenceImageId {
+                Task { @MainActor in
+                    if let imageData = await vm.getImageData(id: id) {
+                        cell.catImage.image = UIImage(data: imageData)
+                        collectionView.performBatchUpdates {
+                            collectionView.reloadItems(at: [indexPath])
+                        }
+                        vm.setImageDataToCache(imageData, for: cat.name)
+                    }
+                }
+            }}
+        
+        
+        
+        
+//        if  let id = cat.referenceImageId {
+//            Task { @MainActor in
+//                if let imageData = await vm.getImageData(id: id) {
+//                    cell.catImage.image = UIImage(data: imageData)
+//                }
+//            }
+//        }
         return cell
     }
     

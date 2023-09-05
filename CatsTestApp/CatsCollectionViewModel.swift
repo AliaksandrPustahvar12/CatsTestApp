@@ -21,12 +21,23 @@ class CatsCollectionViewModel {
     private  var cats: [CatModel] = [CatModel]()
     var updateCollection: (([CatModel], _ page: Int) -> Void)?
     
+    private let imageCache = NSCache<NSString, NSData>()
+    
     init() {
         Task{
             print(page)
             cats = await network.fetchData(path: path, page: String(page), key: key)
             self.updateCollection?(cats, page)
         }
+    }
+    
+    func getImageDataFromCache(for name: String) -> Data? {
+        guard let cacheData = imageCache.object(forKey: name as NSString) else { return nil }
+        return Data(referencing: cacheData)
+    }
+    
+    func setImageDataToCache(_ data: Data, for name: String) {
+        imageCache.setObject(data as NSData, forKey: name as NSString)
     }
     
     func getmoreCats() async {
