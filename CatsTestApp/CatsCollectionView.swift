@@ -37,12 +37,12 @@ class CatsCollectionView: UIViewController {
             let first = self.cats.count - 10
             let last = self.cats.count - 1
             print(self.cats.count, first, last)
-           var indexPathsToUpdate: [IndexPath] = []
-           for i in first...last {
+            var indexPathsToUpdate: [IndexPath] = []
+            for i in first...last {
                 let indexPath = IndexPath(item: i, section: 0)
                 indexPathsToUpdate.append(indexPath)
             }
-
+            
             DispatchQueue.main.async {
                 self.catsView.performBatchUpdates {
                     self.catsView.reloadItems(at: indexPathsToUpdate)
@@ -88,24 +88,10 @@ extension CatsCollectionView: UICollectionViewDelegate, UICollectionViewDataSour
                 Task { @MainActor in
                     if let imageData = await vm.getImageData(id: id) {
                         cell.catImage.image = UIImage(data: imageData)
-                        collectionView.performBatchUpdates {
-                            collectionView.reloadItems(at: [indexPath])
-                        }
                         vm.setImageDataToCache(imageData, for: cat.name)
                     }
                 }
             }}
-        
-        
-        
-        
-//        if  let id = cat.referenceImageId {
-//            Task { @MainActor in
-//                if let imageData = await vm.getImageData(id: id) {
-//                    cell.catImage.image = UIImage(data: imageData)
-//                }
-//            }
-//        }
         return cell
     }
     
