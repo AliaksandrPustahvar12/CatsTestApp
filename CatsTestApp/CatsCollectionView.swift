@@ -36,8 +36,8 @@ class CatsCollectionView: UIViewController {
                 }
             let first = self.cats.count - 10
             let last = self.cats.count - 1
-            print(self.cats.count, first, last)
             var indexPathsToUpdate: [IndexPath] = []
+            
             for i in first...last {
                 let indexPath = IndexPath(item: i, section: 0)
                 indexPathsToUpdate.append(indexPath)
@@ -107,7 +107,7 @@ extension CatsCollectionView: UICollectionViewDelegate, UICollectionViewDataSour
     
     func scrollViewDidScroll(_ scrollView: UIScrollView)  {
         let pos = scrollView.contentOffset.y
-        if pos > catsView.contentSize.height + 70 - scrollView.frame.size.height && pos > 0 {
+        if pos > catsView.contentSize.height + 80 - scrollView.frame.size.height && pos > 0 {
             guard !vm.isPagOn else { return }
             Task {
                 await vm.getmoreCats()

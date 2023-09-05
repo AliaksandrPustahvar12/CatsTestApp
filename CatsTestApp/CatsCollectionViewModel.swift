@@ -17,15 +17,14 @@ class CatsCollectionViewModel {
     let path = "/v1/breeds"
     var page = 0
     let key = "live_skpFP9TrYQk2jSlewvXJVbPVlw4DMEB5dw6rOFtgMkisvswqjORjTxeM5KFBVQkg"
-    
-    private  var cats: [CatModel] = [CatModel]()
+   
     var updateCollection: (([CatModel], _ page: Int) -> Void)?
     
+    private var cats: [CatModel] = [CatModel]()
     private let imageCache = NSCache<NSString, NSData>()
     
     init() {
         Task{
-            print(page)
             cats = await network.fetchData(path: path, page: String(page), key: key)
             self.updateCollection?(cats, page)
         }
