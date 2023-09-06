@@ -29,16 +29,19 @@ class CatsCollectionView: UIViewController {
         setUpCollectionView()
         
         vm.updateCollection = { cats, page in
+            let prev = self.cats.count
             self.cats = cats
                 .filter { $0.wikipediaUrl != nil && $0.referenceImageId != nil }
                 .reduce([]) { (result, element) in
                     return result.contains(element) ? result : result + [element]
                 }
-            let dif = cats.count - self.cats.count
-            print (dif)
+            let post = self.cats.count
+            if prev == post {
+                return
+            }
             if self.cats.count > 10 {
-                let first = self.cats.count - 10 - dif
-                let last = self.cats.count - 1 - dif
+                let first = prev
+                let last = post - 1
                 var indexPathsToUpdate: [IndexPath] = []
                 
                 for i in first...last {
