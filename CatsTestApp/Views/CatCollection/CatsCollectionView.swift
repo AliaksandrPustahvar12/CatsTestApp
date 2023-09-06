@@ -112,7 +112,7 @@ extension CatsCollectionView: UICollectionViewDelegate, UICollectionViewDataSour
     
     func scrollViewDidScroll(_ scrollView: UIScrollView)  {
         let pos = scrollView.contentOffset.y
-        if pos > catsView.contentSize.height + 80 - scrollView.frame.size.height && pos > 0 {
+        if pos > catsView.contentSize.height + 50 - scrollView.frame.size.height && pos > 0 {
             guard !vm.isPagOn else { return }
             Task {
                 await vm.getmoreCats()
