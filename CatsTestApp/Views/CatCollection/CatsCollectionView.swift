@@ -34,18 +34,26 @@ class CatsCollectionView: UIViewController {
                 .reduce([]) { (result, element) in
                     return result.contains(element) ? result : result + [element]
                 }
-            let first = self.cats.count - 10
-            let last = self.cats.count - 1
-            var indexPathsToUpdate: [IndexPath] = []
-            
-            for i in first...last {
-                let indexPath = IndexPath(item: i, section: 0)
-                indexPathsToUpdate.append(indexPath)
-            }
-            
-            DispatchQueue.main.async {
-                self.catsView.performBatchUpdates {
-                    self.catsView.reloadItems(at: indexPathsToUpdate)
+            let dif = cats.count - self.cats.count
+            print (dif)
+            if self.cats.count > 10 {
+                let first = self.cats.count - 10 - dif
+                let last = self.cats.count - 1 - dif
+                var indexPathsToUpdate: [IndexPath] = []
+                
+                for i in first...last {
+                    let indexPath = IndexPath(item: i, section: 0)
+                    indexPathsToUpdate.append(indexPath)
+                }
+                
+                DispatchQueue.main.async {
+                    self.catsView.performBatchUpdates {
+                        self.catsView.reloadItems(at: indexPathsToUpdate)
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.catsView.reloadData()
                 }
             }
         }
